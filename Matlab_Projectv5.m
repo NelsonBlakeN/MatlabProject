@@ -102,12 +102,71 @@ while(~done)
             %Plot n-order regression
             Project_Regression(file);
         case 8
+            %Standard deviation = sigma; average = mu
             %Part A: find probability based on user input for z
             %Part B: find probability based on user input for x
-            %normcdf
+            
+            %TODO: Ask Ishan if this is the correct way to "check for
+            %normality." Also ask if the z value calculation is
+            %correect/how to find x with z/what the rubric means with the
+            %formula (wouldn't it be easier to find x given z with that
+            %equation? Or use norminv?)
+            normDist = input('To your best judgement, is this data normally distributed? (0: No, 1: Yes)');
+            if normDist
+                a = input('Are you entering a (1) z value or (2) x value?');
+                while a ~= 1 && a ~= 2
+                    %Check all inputs for isScalar/isVector, isColumn/isRow,
+                    %isNumeric, isLogical, isChar, isEmpty
+                    switch a
+                        case 1
+                            
+                        case 2
+                            x = input('Enter your desired x value: ');
+                            %On this line: error checking if statement described
+                            %above switch
+                            z = normcdf(x, 0, 1);
+                            fprintf('The z value at x = %.2f = %.2f', x, z)
+                            fprintf(fileID, 'The z value at x = %.2f = %.2f', x, z);
+                        otherwise
+                            disp('Cut it out with these shenanigans.')
+                            a = input('Are you entering a (1) z value or (2) x value?');
+                    end
+                end
+            else
+                disp('You answered no, or the answer was invalid. Returning to the menu.');
+            end
         case 9
+            %Standard deviation = sigma; average = mu
             %Part A: find z based on user input for prob
             %Part B: find x based on user input for prob
+            
+            normDist = input('In your best judgement, is this data normally distributed? (0: No, 1: Yes)');
+            if normDist
+                a = input('Are you looking for a (1) x value or (2) z value?');
+                while a ~= 1 && a ~= 2
+                    switch a
+                        case 1
+                            %Possible revision: check below probability: if
+                            %greater then 1, divide by 100 (means its not
+                            %in decimal format)
+                            p = input('Enter desired probability (in decimal form): ');
+                            %Error check the above number. See case 8.
+                            x = norminv(p, 0, 1);
+                            fprintf('The x value that represents the given probability (%.2f%) is %.2f', p, x);
+                            %TODO: Make sure these are printing on the file
+                            %on different lines....
+                            fprintf(fileID, 'The x value that represents the given probability (%.2f%) is %.2f', p, x);
+                        case 2
+                            %This case might make sense to use the formula
+                            %on the rubric.
+                        otherwise
+                            disp('Cut it out with these shenanigans.')
+                            a = input('Are you looking for a (1) x value or (2) z value?');
+                    end
+                end
+            else
+                disp('You answered no, or the answer was invalid. Returning to the menu.');
+            end
             %norminv
         case 10
             %Exit
