@@ -45,7 +45,7 @@ inputFileName = input('Input the name of your file into the terminal window \n(P
 validRenameChoice = false;
 %TODO: Prompt the user to change file type if necessary
 outputFileName = input('Statistical analysis is being performed. \nWhat would you like to call the output file? Note: if no extension \nis specified, the file will become .mat by default.\n', 's');
-while exists(outputFileName, 'file') == 2 || validRenameChoice
+while exist(outputFileName, 'file') == 2 || validRenameChoice
     choice = input('The file name you chose already exists. Would you like to overwrite \nthe file? (Y/N)', 's');
     choice = upper(choice);
     switch(choice)
@@ -57,8 +57,6 @@ while exists(outputFileName, 'file') == 2 || validRenameChoice
             choice = input('Your input was not valid. Please enter a valid string for your file name \n(as well as desired file extension) or Ctrl+C to quit\n');
     end
 end
-
-disp('Adding a line to figure out the github committ/push stuff.');
 
 fileID = Project_outputFile(outputFileName, file, statFile, username, inputFileName);
 fprintf('fileID = %i\n', fileID);
@@ -75,7 +73,7 @@ while(~done)
             %Reset input file name and write to statistics output to output file
             newInputFileName = input('Type the new input name: ', 's');
             [file, statFile] = Project_loadFile(newInputFileName);
-            newChoice = input('Would you like to (1) append this data to the existing file or\n(2) create a new output file?');
+            newChoice = input('Would you lblkaike to (1) append this data to the existing file or\n(2) create a new output file?');
             switch newChoice
                 case 1
                     
@@ -99,6 +97,7 @@ while(~done)
             histfit(statFile)
         case 6
             %Plot probability plots
+            probplot(file)
         case 7
             %Plot n-order regression
             Project_Regression(file);
@@ -112,11 +111,12 @@ while(~done)
             %norminv
         case 10
             %Exit
-            %BUG: Files aren't being closed?
+            %BUG: Files aren't being closed? Tf
             fprintf('file being closed: %i\n', fileID);
             fclose(fileID);
             done = ~done;
         otherwise
+            %BUG: Yeah...same as above.
             fclose(fileID);
             done = ~done;
     end
