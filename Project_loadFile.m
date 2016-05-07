@@ -19,6 +19,7 @@ end
 %statement at the end of the strfind if.
 
 try
+    disp('Loading...')
     file = load(inputFileName);
 catch
     file = xlsread(inputFileName);

@@ -111,16 +111,33 @@ while(~done)
             %correect/how to find x with z/what the rubric means with the
             %formula (wouldn't it be easier to find x given z with that
             %equation? Or use norminv?)
-            normDist = input('To your best judgement, is this data normally distributed? (0: No, 1: Yes)');
+            
+            a = input('Are you entering a (1) z value or (2) x value?\n', 's');
+            while a ~= '1' && a ~= '2'
+                disp('Input invalid.')
+                a = input('Are you entering a (1) z value or (2) x value?\n', 's');
+            end
+            
+            normDist = input('To your best judgement, is this data \nnormally distributed? (0: No, 1: Yes)\n', 's');
             if normDist
-                a = input('Are you entering a (1) z value or (2) x value?');
-                while a ~= 1 && a ~= 2
+                
+                xzCont = false;
+                while ~xzCont
+                    try
+                        a = input('Are you entering a (1) z value or (2) x value?\n', 's');
+                        xzCont = true;
+                    catch
+                        disp('Your input could not be understood. Try again.');
+                    end
+                end
+                
+                while a ~= '1' && a ~= '2'
                     %Check all inputs for isScalar/isVector, isColumn/isRow,
                     %isNumeric, isLogical, isChar, isEmpty
                     switch a
-                        case 1
+                        case '1'
                             
-                        case 2
+                        case '2'
                             x = input('Enter your desired x value: ');
                             %On this line: error checking if statement described
                             %above switch
@@ -129,7 +146,7 @@ while(~done)
                             fprintf(fileID, 'The z value at x = %.2f = %.2f', x, z);
                         otherwise
                             disp('Cut it out with these shenanigans.')
-                            a = input('Are you entering a (1) z value or (2) x value?');
+                            a = input('Are you entering a (1) z value or (2) x value?\n');
                     end
                 end
             else
@@ -140,7 +157,7 @@ while(~done)
             %Part A: find z based on user input for prob
             %Part B: find x based on user input for prob
             
-            normDist = input('In your best judgement, is this data normally distributed? (0: No, 1: Yes)');
+            normDist = input('In your best judgement, is this data \nnormally distributed? (0: No, 1: Yes)\n');
             if normDist
                 a = input('Are you looking for a (1) x value or (2) z value?');
                 while a ~= 1 && a ~= 2
