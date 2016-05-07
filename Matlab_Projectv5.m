@@ -136,11 +136,12 @@ while(~done)
                     %isNumeric, isLogical, isChar, isEmpty
                     switch a
                         case '1'
-                            
+                            %prob = normcddf(z, 0, 1)
                         case '2'
                             x = input('Enter your desired x value: ');
                             %On this line: error checking if statement described
                             %above switch
+                            %prob = normcdf(x, dataMu, dataSig)
                             z = normcdf(x, 0, 1);
                             fprintf('The z value at x = %.2f = %.2f', x, z)
                             fprintf(fileID, 'The z value at x = %.2f = %.2f', x, z);
@@ -161,6 +162,10 @@ while(~done)
             if normDist
                 a = input('Are you looking for a (1) x value or (2) z value?');
                 while a ~= 1 && a ~= 2
+                    %to find x: use norminv to find z, then use rubric
+                    %equation (rearranged) to solve for x.
+                    %OR
+                    %x = norminv with average/standard deviation of DATA SET
                     switch a
                         case 1
                             %Possible revision: check below probability: if
@@ -184,7 +189,6 @@ while(~done)
             else
                 disp('You answered no, or the answer was invalid. Returning to the menu.');
             end
-            %norminv
         case 10
             %Exit
             %BUG: Files aren't being closed? Tf

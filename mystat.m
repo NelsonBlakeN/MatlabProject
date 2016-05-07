@@ -10,10 +10,10 @@ function [mea, med, mod, va, stdev, mi, ma, counter, msg] = mystat(X)
         counter = counter + 1;
     end
     if counter > 30
-        stdev = std(X);
+        stdev = std(X, 1);
         msg = '(Population Standard Deviation)';
     else
-        stdev = std(X, 1);
+        stdev = std(X);
         msg = '(Sample Standard Deviation)';
     end
 end
