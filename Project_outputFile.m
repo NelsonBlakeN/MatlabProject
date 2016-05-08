@@ -1,4 +1,4 @@
-function [newFileID] = Project_outputFile(newOutputFileName, file, statFile, username, inputFileName, oldFileID, oldOutputFileName)
+function [newFileID, avg, stdev] = Project_outputFile(newOutputFileName, file, statFile, username, inputFileName, oldFileID, oldOutputFileName)
 
     if(~exist(newOutputFileName, 'file'))
         newFileID = fopen(newOutputFileName, 'a+');

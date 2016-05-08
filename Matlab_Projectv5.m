@@ -37,7 +37,7 @@ inputFileName = input('Input the name of your file into the terminal window \n(P
 
 [file, statFile] = Project_loadFile(inputFileName);
 
-%% Save Output File
+%% Creating Output File Name
 %Statistics must be done after outputFileName has been assigned from user
 %input (saving done after everything) in order for fopen to work with
 %correct parameters (see top)
@@ -58,22 +58,25 @@ while exist(outputFileName, 'file') == 2 || validRenameChoice
     end
 end
 
-fileID = Project_outputFile(outputFileName, file, statFile, username, inputFileName);
+%% Creating Output File
+[fileID, avg, stdev] = Project_outputFile(outputFileName, file, statFile, username, inputFileName);
 fprintf('fileID = %i\n', fileID);
 
+%% Options Menu
 done = false;
 while(~done)
     mtitle = sprintf('Is there anything else you want to do with the data, %s?', username);
     choice = menu(mtitle, 'Reset username', 'Reset input file', 'Reset output file', 'Plot histogram', 'Plot histogram fit', 'Plot probability plots', 'Regression of y on x', 'Find probability given x or z', 'Find x or z given probability', 'Exit');
     switch(choice)
         case 1
+            %% Username Reset
             %Reset username
             username = input('Type your new name: ', 's');
         case 2
-            %Reset input file name and write to statistics output to output file
+            %% Reset input file name and write to statistics output to output file
             newInputFileName = input('Type the new input name: ', 's');
             [file, statFile] = Project_loadFile(newInputFileName);
-            newChoice = input('Would you lblkaike to (1) append this data to the existing file or\n(2) create a new output file?');
+            newChoice = input('Would you like to (1) append this data to the existing file or\n(2) create a new output file?');
             switch newChoice
                 case 1
                     
@@ -84,107 +87,97 @@ while(~done)
                 otherwise
             end
         case 3
-            %Reset output file/file name and writes all info and new
+            %% Reset output file/file name and writes all info and new
             %statistics to new file
             oldOutputFileName = outputFileName;
             outputFileName = input('Type your new output file name: ', 's');
             Project_outputFile(outputFileName, file, statFile, username, inputFileName, fileID, oldOutputFileName)
         case 4
-            %Histogram
+            %% Histogram
             histogram(statFile)
         case 5
-            %Histogram fit
+            %% Histogram fit
             histfit(statFile)
         case 6
-            %Plot probability plots
+            %% Plot probability plots
             probplot(file)
         case 7
-            %Plot n-order regression
+            %% Plot n-order regression
             Project_Regression(file);
         case 8
+            %% Find probability given x/z
             %Standard deviation = sigma; average = mu
             %Part A: find probability based on user input for z
-            %Part B: find probability based on user input for x
+            %Part B: find probability based on user input for x     
             
-            %TODO: Ask Ishan if this is the correct way to "check for
-            %normality." Also ask if the z value calculation is
-            %correect/how to find x with z/what the rubric means with the
-            %formula (wouldn't it be easier to find x given z with that
-            %equation? Or use norminv?)
-            
+            %% Determine whether x/z value and error check
             a = input('Are you entering a (1) z value or (2) x value?\n', 's');
             while a ~= '1' && a ~= '2'
                 disp('Input invalid.')
                 a = input('Are you entering a (1) z value or (2) x value?\n', 's');
             end
             
+            %% Check for normal distribustion
             normDist = input('To your best judgement, is this data \nnormally distributed? (0: No, 1: Yes)\n', 's');
             if normDist
-                
-                xzCont = false;
-                while ~xzCont
-                    try
-                        a = input('Are you entering a (1) z value or (2) x value?\n', 's');
-                        xzCont = true;
-                    catch
-                        disp('Your input could not be understood. Try again.');
-                    end
-                end
-                
-                while a ~= '1' && a ~= '2'
-                    %Check all inputs for isScalar/isVector, isColumn/isRow,
-                    %isNumeric, isLogical, isChar, isEmpty
-                    switch a
-                        case '1'
-                            %prob = normcddf(z, 0, 1)
-                        case '2'
-                            x = input('Enter your desired x value: ');
-                            %On this line: error checking if statement described
-                            %above switch
-                            %prob = normcdf(x, dataMu, dataSig)
-                            z = normcdf(x, 0, 1);
-                            fprintf('The z value at x = %.2f = %.2f', x, z)
-                            fprintf(fileID, 'The z value at x = %.2f = %.2f', x, z);
-                        otherwise
-                            disp('Cut it out with these shenanigans.')
-                            a = input('Are you entering a (1) z value or (2) x value?\n');
-                    end
+                %Check all inputs for isScalar/isVector, isColumn/isRow,
+                %isNumeric, isLogical, isChar, isEmpty
+                switch a
+                    case '1'
+                        z = input('Type desired z value: ');
+                        prob = normcdf(z, 0, 1);
+                        fprintf('The probability at the given z value is %.2f', prob);
+                        fprintf(fileID, 'The probability at the given z value is %.2f', prob);
+                    case '2'
+                        x = input('Enter your desired x value: ');
+                        %On this line: error checking if statement described
+                        %above switch
+                        
+                        prob = normcdf(x, avg, stdev);
+                        fprintf('The probability at the given x value is %.2f', prob)
+                        fprintf(fileID, 'The probability the given x value is %.2f', prob);
+                    otherwise
+                        disp('Cut it out with these shenanigans.')
+                        a = input('Are you entering a (1) z value or (2) x value?\n');
                 end
             else
                 disp('You answered no, or the answer was invalid. Returning to the menu.');
             end
         case 9
+            %% Finding z/x based on given probability
             %Standard deviation = sigma; average = mu
             %Part A: find z based on user input for prob
             %Part B: find x based on user input for prob
             
+            %% Determine whether x/z value and error check
+            a = input('Are you looking for a (1) z value or (2) x value?\n', 's');
+            while a ~= '1' && a ~= '2'
+                disp('Input invalid.')
+                a = input('Are you looking for a (1) z value or (2) x value?\n', 's');
+            end
+            
+            %% Check for normal distribution
             normDist = input('In your best judgement, is this data \nnormally distributed? (0: No, 1: Yes)\n');
             if normDist
-                a = input('Are you looking for a (1) x value or (2) z value?');
-                while a ~= 1 && a ~= 2
-                    %to find x: use norminv to find z, then use rubric
-                    %equation (rearranged) to solve for x.
-                    %OR
-                    %x = norminv with average/standard deviation of DATA SET
-                    switch a
-                        case 1
-                            %Possible revision: check below probability: if
-                            %greater then 1, divide by 100 (means its not
-                            %in decimal format)
-                            p = input('Enter desired probability (in decimal form): ');
-                            %Error check the above number. See case 8.
-                            x = norminv(p, 0, 1);
-                            fprintf('The x value that represents the given probability (%.2f%) is %.2f', p, x);
-                            %TODO: Make sure these are printing on the file
-                            %on different lines....
-                            fprintf(fileID, 'The x value that represents the given probability (%.2f%) is %.2f', p, x);
-                        case 2
-                            %This case might make sense to use the formula
-                            %on the rubric.
-                        otherwise
-                            disp('Cut it out with these shenanigans.')
-                            a = input('Are you looking for a (1) x value or (2) z value?');
-                    end
+                %Possible revision: check below probability: if
+                %greater then 1, divide by 100 (means its not
+                %in decimal format)
+                p = input('Enter desired probability (in decimal form): ');
+                switch a
+                    case 1
+                        %Error check the above number. See case 8.
+                        z = norminv(p, 0, 1);
+                        fprintf('The z value that represents the given probability (%.2f%) is %.2f', p, z);
+                        %TODO: Make sure these are printing on the file
+                        %on different lines....
+                        fprintf(fileID, 'The z value that represents the given probability (%.2f%) is %.2f', p, z);
+                    case 2
+                        x = norminv(p, avg, stdev);
+                        fprintf('The x value that represents the given probability (%.2f%) is %.2f', p, x);
+                        fprintf(fileID, 'The x value that represents the given probability (%.2f%) is %.2f', p, x);
+                    otherwise
+                        disp('Cut it out with these shenanigans.')
+                        a = input('Are you looking for a (1) x value or (2) z value?');
                 end
             else
                 disp('You answered no, or the answer was invalid. Returning to the menu.');
