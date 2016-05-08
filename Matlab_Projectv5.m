@@ -27,7 +27,7 @@
 %fclose(fileID)
 
 %IF XLSX
-%xlswrite(user_name_choice, variale_to_put_in_cell, sheet_number, 'cell
+%xlswrite(user_name_choice, variable_to_put_in_cell, sheet_number, 'cell
 %number/range'
 
 %% Take in user's file
@@ -60,7 +60,6 @@ end
 
 %% Creating Output File
 [fileID, avg, stdev] = Project_outputFile(outputFileName, file, statFile, username, inputFileName);
-fprintf('fileID = %i\n', fileID);
 
 %% Options Menu
 done = false;
@@ -184,13 +183,14 @@ while(~done)
             end
         case 10
             %Exit
-            %BUG: Files aren't being closed? Tf
-            fprintf('file being closed: %i\n', fileID);
-            fclose(fileID);
             done = ~done;
         otherwise
-            %BUG: Yeah...same as above.
-            fclose(fileID);
             done = ~done;
     end
 end
+
+%Tried putting the fclose() line in the 'Exit' case, but for some reason it
+%wasn't closing the files, even though it had the right file ID and
+%everything. However, it works here.
+fclose all;
+clear
