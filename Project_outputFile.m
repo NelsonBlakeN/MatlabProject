@@ -20,9 +20,6 @@ function [newFileID, avg, stdev] = Project_outputFile(newOutputFileName, file, s
         delete(oldOutputFileName);
     end
 
-
-    %BUG: Actully appending to a file that is already made creates an
-    %encrypted mess.
     newFileID = fopen(newOutputFileName, 'a+');
     if exist('statFile', 'var')
         [avg, med, mod, va, stdev, minimum, maximum, count, msg] = mystat(statFile);
@@ -30,7 +27,7 @@ function [newFileID, avg, stdev] = Project_outputFile(newOutputFileName, file, s
         [avg, med, mod, va, stdev, minimum, maximum, count, msg] = mystat(file);
     end
 
-    %TODO: Add clause to write xls if necessary
+    %Works indiscrimanetly of data type
     prompt = sprintf('From %s: ', inputFileName);
     fprintf(newFileID, '%s\nMean\t= %8.2f\nMedian\t= %8.2f\nMode\t= %8.2f\nVar\t\t= %8.2f\nStdev\t= %8.2f\t%s\nMin\t\t= %8.2f\nMax\t\t= %8.2f\nCount\t= %8.2f', prompt, avg, med, mod, va, stdev, msg, minimum, maximum, count);
 end

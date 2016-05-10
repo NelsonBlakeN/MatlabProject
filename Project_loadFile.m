@@ -15,9 +15,6 @@ while(exist(inputFileName, 'file') ~= 2)
     inputFileName = input('Your file could not be found, or does not exist in this file directory. Please try again.\n', 's');
 end
 
-%TODO: Put the error check below in a loop. That will fulfill the else
-%statement at the end of the strfind if.
-
 try
     disp('Loading...')
     file = load(inputFileName);
@@ -25,15 +22,10 @@ catch
     file = xlsread(inputFileName);
 end
 
-%BUG: If the .mat file is 2 one column variables, as opposed to 1 two
-%column variable, statFile will not be created, and the two variables
-%will be vertically stacked.
 if strfind(inputFileName, '.mat') > 0
     %.mat files are loaded as structs, so it needs to be converted into
     %something that can be used universally.
-    file = cell2mat(struct2cell(file));
-else
-    
+    file = cell2mat(struct2cell(file));    
 end
 
 s = size(file);
